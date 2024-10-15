@@ -31,7 +31,7 @@
       <hr>
       <ul>
         <li>
-          <router-link class="link" to="/" @click="closeMenu">Acceuil</router-link>
+          <router-link class="link" to="/" @click="closeMenu">Accueil</router-link>
         </li>
         <li>
           <router-link class="link" to="/about" @click="closeMenu">Inoubliable</router-link>

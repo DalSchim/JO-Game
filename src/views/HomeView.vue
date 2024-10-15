@@ -12,6 +12,15 @@
           </div>
         </div>
         <img src="@/assets/phryge.png" alt="">
+
+
+        <div class="scroll-downs">
+          <div class="mousey">
+            <div class="scroller"></div>
+          </div>
+        </div>
+
+
       </section>
     </header>
 
@@ -55,6 +64,7 @@ header {
   background-color: #f1f1f1;
 
   .header {
+    position: relative;
     padding: 0px 120px;
     display: flex;
     justify-content: space-around;
@@ -77,6 +87,37 @@ header {
     }
 
 
+    .scroll-downs {
+      position: absolute;
+      bottom: 120px;
+      margin: auto;
+      width :34px;
+      height: 55px;
+    }
+    .mousey {
+      width: 3px;
+      padding: 10px 15px;
+      height: 35px;
+      border: 2px solid black;
+      border-radius: 25px;
+      opacity: 0.75;
+      box-sizing: content-box;
+    }
+    .scroller {
+      width: 3px;
+      height: 10px;
+      border-radius: 25%;
+      background-color: black;
+      animation-name: scroll;
+      animation-duration: 2.2s;
+      animation-timing-function: cubic-bezier(.15,.41,.69,.94);
+      animation-iteration-count: infinite;
+    }
+    @keyframes scroll {
+      0% { opacity: 0; }
+      10% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(15px); opacity: 0;}
+    }
 
     .text {
       width: 50%;
