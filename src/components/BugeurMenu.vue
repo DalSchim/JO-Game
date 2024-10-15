@@ -217,7 +217,7 @@ li {
     backdrop-filter: blur(7px);
     background: rgba(0, 0, 0, 0.78);
     width: 100%;
-    height: 100svh;
+    height: 100vh;
     display: flex;
     align-items: center;
     margin-left: -100%;

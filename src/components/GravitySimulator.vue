@@ -151,10 +151,8 @@ export default {
       const initialGravity = 5; // Gravité de départ élevée
       const minGravity = 0.1; // Gravité minimale vers la fin du temps
 
-      // Calculer un ratio basé sur le temps restant (inverse)
       const timeRatio = remainingTime / this.$props.duration;
 
-      // Calculer la nouvelle gravité en diminuant avec le temps
       const newGravity = minGravity + timeRatio * (initialGravity - minGravity);
 
       // Appliquer la nouvelle gravité
