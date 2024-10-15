@@ -1,6 +1,13 @@
 <template>
   <div class="container">
-    <TimerSystem :duration="120" @time-up="endSimulation" @timer-tick="adjustGravity()"/>
+    <TimerSystem
+        v-if="!isTimeUp"
+        :duration="120"
+        @time-up="endSimulation"
+        @timer-tick="adjustGravity"/>
+    <div v-if="isTimeUp" class="overlay">
+      <TimesUp @restart="restartGame"/>
+    </div>
     <ScoreSystem :score="score"/>
     <div ref="app"></div>
   </div>
@@ -10,12 +17,14 @@
 import Matter from "matter-js";
 import ScoreSystem from "./ScoreSystem.vue";
 import TimerSystem from "./TimerSystem.vue";
+import TimesUp from "@/components/TimesUp.vue";
 
 export default {
   name: "GravitySimulator",
   components: {
     ScoreSystem,
     TimerSystem,
+    TimesUp
   },
   data() {
     return {
@@ -74,39 +83,29 @@ export default {
 
     addRandomBodies(engine) {
       const randomX = Math.random() * 800;
-      const randomSize = 20 + Math.random() * 30; // Taille aléatoire entre 20 et 50
+      const randomSize = 20 + Math.random() * 30;
       let newBody;
       let type;
 
-      // Déterminer si c'est un bonus, un malus ou un objet normal
       const randomType = Math.random();
       if (randomType < 0.2) {
-        // 20% de chance d'être un bonus
         newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
           restitution: 0.8,
-          frictionAir: 0.001,
           render: {fillStyle: "green"},
-          label: "bonus", // Identifié comme bonus
+          label: "bonus", // bonus
         });
-        type = "bonus";
       } else if (randomType < 0.4) {
-        // 20% de chance d'être un malus
         newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
           restitution: 0.8,
-          frictionAir: 0.001,
           render: {fillStyle: "red"},
-          label: "malus", // Identifié comme malus
+          label: "malus", // malus
         });
-        type = "malus";
       } else {
-        // 60% de chance d'être un objet normal
         newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
           restitution: 0.8,
-          frictionAir: 0.001,
           render: {fillStyle: "blue"},
-          label: "normal", // Identifié comme normal
+          label: "normal", // normal
         });
-        type = "normal";
       }
 
       Matter.World.add(engine.world, [newBody]);
@@ -128,20 +127,18 @@ export default {
           const object = pair.bodyA === ground ? pair.bodyB : pair.bodyA;
           Matter.World.remove(this.engine.world, object);
 
-          console.log(object)
-
           switch (object.label) {
-              case "bonus":
-                this.score += 50
-                break;
-              case "malus":
-                this.score -= 30;
-                break;
-              case "normal":
-                this.score += 10;
+            case "bonus":
+              this.score += 50
+              break;
+            case "malus":
+              this.score -= 30;
+              break;
+            case "normal":
+              this.score += 10;
 
-            }
           }
+        }
 
 
       });
