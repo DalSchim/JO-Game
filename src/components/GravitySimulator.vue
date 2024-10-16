@@ -9,7 +9,7 @@
         @timer-tick="adjustGravity"
     />
     <div v-if="isTimeUp" class="overlay">
-      <TimesUp :score="score" @restart="restartGame" />
+      <TimesUp :score="score" @restart="restartGame" @goToHome="navigateToHome" />
     </div>
     <ScoreSystem v-if="gameStarted" :score="score" />
     <div ref="app"></div>
@@ -78,6 +78,10 @@ export default {
       this.ObjectInterval = setInterval(() => {
         this.addRandomBodies(this.engine);
       }, 2000); // Ajoute des corps aléatoires lorsque le jeu commence
+    },
+    navigateToHome() {
+      // Logique pour naviguer vers la HomeView, par exemple :
+      this.$router.push({ name: 'home' }); // Assure-toi que 'HomeView' est le nom correct
     },
 
     initMatter() {
