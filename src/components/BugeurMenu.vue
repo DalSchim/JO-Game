@@ -138,7 +138,7 @@ export default {
   height: 100px;
   box-sizing: border-box;
   backdrop-filter: blur(2px);
-  background: rgba(211, 211, 211, 0.78);
+  background: rgba(255, 255, 255, 0.78);
   z-index: 111;
 }
 

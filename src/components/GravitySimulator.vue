@@ -1,14 +1,17 @@
 <template>
   <div class="container">
+    <!-- Menu de démarrage -->
+    <StartMenu v-if="!gameStarted && !isTimeUp" @startGame="startGame" />
     <TimerSystem
-        v-if="!isTimeUp"
-        :duration="120"
+        v-if="gameStarted && !isTimeUp"
+        :duration="timerDuration"
         @time-up="endSimulation"
-        @timer-tick="adjustGravity"/>
+        @timer-tick="adjustGravity"
+    />
     <div v-if="isTimeUp" class="overlay">
-      <TimesUp @restart="restartGame"/>
+      <TimesUp :score="score" @restart="restartGame" />
     </div>
-    <ScoreSystem :score="score"/>
+    <ScoreSystem v-if="gameStarted" :score="score" />
     <div ref="app"></div>
   </div>
 </template>
@@ -18,11 +21,16 @@ import Matter from "matter-js";
 import ScoreSystem from "./ScoreSystem.vue";
 import TimerSystem from "./TimerSystem.vue";
 import TimesUp from "@/components/TimesUp.vue";
+import StartMenu from "@/components/StartMenu.vue"; // Import du menu de démarrage
+import bonusImage from '@/assets/bonus.png';
+import malusImage from '@/assets/malus.png';
+import basket from '@/assets/panier.png';
 
 export default {
   name: "GravitySimulator",
   components: {
     ScoreSystem,
+    StartMenu,
     TimerSystem,
     TimesUp
   },
@@ -32,12 +40,30 @@ export default {
       engine: null,
       ground: null,
       matterObjects: [],
-      groundSpeed: 10, // Vitesse de déplacement de la plateforme
-      spriteImages: [
-        require("@/assets/argent.png"),
-        require("@/assets/or.png"),
-        require("@/assets/bronze.png"),
-      ],
+      groundSpeed: 15,
+      sprite_size: 64,
+      isTimeUp: false,
+      malusActive: false,
+      malusDuration: 15,
+      malusTimer: null,
+      timerDuration: 120,
+      timerInterval: null,
+      ObjectInterval: null,
+      gameStarted: false, // État pour savoir si le jeu a commencé
+      medals: [
+        {
+          type: "argent",
+          image: require("@/assets/argent.png"),
+        },
+        {
+          type: "or",
+          image: require("@/assets/or.png"),
+        },
+        {
+          type: "bronze",
+          image: require("@/assets/bronze.png"),
+        }
+      ]
     };
   },
   mounted() {
@@ -46,16 +72,30 @@ export default {
     this.addTouchControls();
   },
   methods: {
+    startGame() {
+      this.gameStarted = true; // Met à jour l'état lorsque le jeu commence
+      this.startTimer(); // Démarre le timer lorsque le jeu commence
+      this.ObjectInterval = setInterval(() => {
+        this.addRandomBodies(this.engine);
+      }, 2000); // Ajoute des corps aléatoires lorsque le jeu commence
+    },
+
     initMatter() {
       const engine = Matter.Engine.create({
-        gravity: {y: 1},
+        gravity: {y: 0.5},
       });
       this.engine = engine;
 
-      this.ground = Matter.Bodies.rectangle(400, 580, 810, 60, {
+      this.ground = Matter.Bodies.rectangle(400, 580, 240, 200, {
         isStatic: true,
         label: "ground",
-        render: {fillStyle: "red"},
+        render: {
+          sprite: {
+            texture: basket,
+            xScale: 0.5,
+            yScale: 0.5,
+          }
+        },
       });
       Matter.World.add(engine.world, [this.ground]);
 
@@ -65,7 +105,7 @@ export default {
         options: {
           width: window.innerWidth,
           height: window.innerHeight,
-          background: "rgba(0, 255, 255, 0.5)",
+          background: "none",
           wireframes: false,
         },
       });
@@ -74,15 +114,11 @@ export default {
       const runner = Matter.Runner.create();
       Matter.Runner.run(runner, engine);
 
-      setInterval(() => {
-        this.addRandomBodies(engine);
-      }, 2000);
-
       Matter.Events.on(engine, "collisionStart", this.handleCollision);
     },
 
     addRandomBodies(engine) {
-      const randomX = Math.random() * 800;
+      const randomX = Math.random() * window.innerWidth;
       const randomSize = 20 + Math.random() * 30;
       let newBody;
       let type;
@@ -90,21 +126,37 @@ export default {
       const randomType = Math.random();
       if (randomType < 0.2) {
         newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
-          restitution: 0.8,
-          render: {fillStyle: "green"},
-          label: "bonus", // bonus
+          render: {
+            sprite: {
+              texture: bonusImage,
+              xScale: 0.5,
+              yScale: 0.5,
+            }
+          },
+          label: "bonus", //malus
         });
       } else if (randomType < 0.4) {
         newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
-          restitution: 0.8,
-          render: {fillStyle: "red"},
-          label: "malus", // malus
+          render: {
+            sprite: {
+              texture: malusImage, // Use the imported bonus image
+              xScale: 0.5, // Adjust size
+              yScale: 0.5, // Adjust size
+            }
+          },
+          label: "malus", //malus
         });
       } else {
+        const randomMedail = this.medals[Math.floor(Math.random() * this.medals.length)];
         newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
-          restitution: 0.8,
-          render: {fillStyle: "blue"},
-          label: "normal", // normal
+          render: {
+            sprite: {
+              texture: randomMedail.image,
+              xScale: 0.2, // Reduce medal size
+              yScale: 0.2, // Reduce medal size
+            },
+          },
+          label: randomMedail.type,
         });
       }
 
@@ -115,6 +167,32 @@ export default {
         size: randomSize,
         type: type,
       });
+    },
+
+    startTimer() {
+      this.timerInterval = setInterval(() => {
+        if (this.timerDuration > 0) {
+          this.timerDuration--;
+        } else {
+          this.endSimulation();  // Appeler endSimulation directement
+        }
+      }, 1000);
+    },
+
+    endSimulation() {
+      if (this.engine && this.engine.runner) {
+        Matter.Runner.stop(this.engine.runner);
+      }
+
+      if (this.engine && this.engine.world) {
+        this.engine.world.gravity.y = 0;
+      }
+      clearInterval(this.ObjectInterval);
+      this.isTimeUp = true;
+    },
+
+    restartGame() {
+      window.location.reload();
     },
 
     handleCollision(event) {
@@ -129,18 +207,26 @@ export default {
 
           switch (object.label) {
             case "bonus":
-              this.score += 50
+              this.score += 50;
+              this.timerDuration += 10;
               break;
             case "malus":
-              this.score -= 30;
+              this.timerDuration -= 10;
               break;
             case "normal":
               this.score += 10;
-
+              break;
+            case "or":
+              this.score += 50;
+              break;
+            case "argent":
+              this.score += 20;
+              break;
+            case "bronze":
+              this.score += 10;
+              break;
           }
         }
-
-
       });
     },
 
@@ -148,17 +234,65 @@ export default {
       if (!this.ground) return;
 
       const displacement = direction === "left" ? -this.groundSpeed : this.groundSpeed;
-      Matter.Body.translate(this.ground, {x: displacement, y: 0});
+
+      const groundPosition = this.ground.position;
+
+      const screenWidth = window.innerWidth;
+      const groundWidth = this.ground.bounds.max.x - this.ground.bounds.min.x;
+
+      const newXPosition = groundPosition.x + displacement;
+
+      const leftEdge = newXPosition - groundWidth / 2;
+      const rightEdge = newXPosition + groundWidth / 2;
+
+      if (leftEdge >= 0 && rightEdge <= screenWidth) {
+        Matter.Body.translate(this.ground, {x: displacement, y: 0});
+      }
     },
 
     addKeyboardControls() {
+      this.keysPressed = {};
+      this.movementInterval = null;
+
       window.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowLeft") {
-          this.moveGround("left");
-        } else if (event.key === "ArrowRight") {
-          this.moveGround("right");
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          if (!this.keysPressed[event.key]) {
+            this.keysPressed[event.key] = true;
+            this.startMovement();
+          }
         }
       });
+
+      window.addEventListener("keyup", (event) => {
+        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+          this.keysPressed[event.key] = false;
+          if (!this.keysPressed["ArrowLeft"] && !this.keysPressed["ArrowRight"]) {
+            this.stopMovement();
+          }
+        }
+      });
+    },
+
+    startMovement() {
+      if (this.movementInterval === null) {
+        const move = () => {
+          if (this.keysPressed["ArrowLeft"]) {
+            this.moveGround("left");
+          }
+          if (this.keysPressed["ArrowRight"]) {
+            this.moveGround("right");
+          }
+          this.movementInterval = requestAnimationFrame(move);
+        };
+        this.movementInterval = requestAnimationFrame(move);
+      }
+    },
+
+    stopMovement() {
+      if (this.movementInterval !== null) {
+        cancelAnimationFrame(this.movementInterval);
+        this.movementInterval = null;
+      }
     },
 
     addTouchControls() {
@@ -180,18 +314,16 @@ export default {
         touchStartX = touchCurrentX;
       });
     },
-    adjustGravity(remainingTime) {
-      const initialGravity = 5; // Gravité de départ élevée
-      const minGravity = 0.1; // Gravité minimale vers la fin du temps
 
-      const timeRatio = remainingTime / this.$props.duration;
+    adjustGravity(remainingTime) {
+      const initialGravity = 0.5;
+      const minGravity = 1;
+
+      const timeRatio = remainingTime / this.timerDuration;
 
       const newGravity = minGravity + timeRatio * (initialGravity - minGravity);
 
-      // Appliquer la nouvelle gravité
       this.engine.world.gravity.y = newGravity;
-
-      console.log("Gravité ajustée à :", newGravity);
     },
   },
 };
@@ -201,5 +333,7 @@ export default {
 .container {
   overflow: hidden;
   height: 100vh;
+  background: url("../assets/bg.png");
+  background-size: cover;
 }
 </style>

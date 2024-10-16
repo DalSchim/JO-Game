@@ -1,8 +1,5 @@
-
-
 <template>
   <GravitySimulator/>
-
 </template>
 
 <style scoped>
