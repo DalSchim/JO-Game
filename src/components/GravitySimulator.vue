@@ -1,7 +1,14 @@
 <template>
   <div class="container">
-    <TimerSystem :duration="120" @time-up="endSimulation" @timer-tick="adjustGravity()" />
-    <ScoreSystem :score="score" />
+    <TimerSystem
+        v-if="!isTimeUp"
+        :duration="120"
+        @time-up="endSimulation"
+        @timer-tick="adjustGravity"/>
+    <div v-if="isTimeUp" class="overlay">
+      <TimesUp @restart="restartGame"/>
+    </div>
+    <ScoreSystem :score="score"/>
     <div ref="app"></div>
   </div>
 </template>
@@ -10,12 +17,14 @@
 import Matter from "matter-js";
 import ScoreSystem from "./ScoreSystem.vue";
 import TimerSystem from "./TimerSystem.vue";
+import TimesUp from "@/components/TimesUp.vue";
 
 export default {
   name: "GravitySimulator",
   components: {
     ScoreSystem,
     TimerSystem,
+    TimesUp
   },
   data() {
     return {
@@ -74,26 +83,37 @@ export default {
 
     addRandomBodies(engine) {
       const randomX = Math.random() * 800;
-      const randomSize = 10;
-      const randomImage = this.spriteImages[
-          Math.floor(Math.random() * this.spriteImages.length)
-          ];
+      const randomSize = 20 + Math.random() * 30;
+      let newBody;
+      let type;
 
-      const newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
-        restitution: 0.8,
-        frictionAir: 0.001,
-        render: {fillStyle: "red"},
-        label: "circle",
-
-    });
+      const randomType = Math.random();
+      if (randomType < 0.2) {
+        newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
+          restitution: 0.8,
+          render: {fillStyle: "green"},
+          label: "bonus", // bonus
+        });
+      } else if (randomType < 0.4) {
+        newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
+          restitution: 0.8,
+          render: {fillStyle: "red"},
+          label: "malus", // malus
+        });
+      } else {
+        newBody = Matter.Bodies.circle(randomX, 0 - randomSize, randomSize, {
+          restitution: 0.8,
+          render: {fillStyle: "blue"},
+          label: "normal", // normal
+        });
+      }
 
       Matter.World.add(engine.world, [newBody]);
 
       this.matterObjects.push({
         body: newBody,
         size: randomSize,
-        type: newBody.label,
-        image: randomImage,
+        type: type,
       });
     },
 
@@ -106,8 +126,21 @@ export default {
         if (pair.bodyA === ground || pair.bodyB === ground) {
           const object = pair.bodyA === ground ? pair.bodyB : pair.bodyA;
           Matter.World.remove(this.engine.world, object);
-          this.score += 10;
+
+          switch (object.label) {
+            case "bonus":
+              this.score += 50
+              break;
+            case "malus":
+              this.score -= 30;
+              break;
+            case "normal":
+              this.score += 10;
+
+          }
         }
+
+
       });
     },
 
@@ -166,7 +199,7 @@ export default {
 
 <style scoped>
 .container {
-    overflow:  hidden;
-    height: 100vh;
+  overflow: hidden;
+  height: 100vh;
 }
 </style>
