@@ -21,7 +21,7 @@ export default {
 
 <template>
   <div class="scord-board">
-    <h3>Score Board</h3>
+    <h3>Tableau de score</h3>
     <ul v-for="(score, index) in scores" :key="index">
       <li>{{ score.name }} : {{ score.score }}</li>
     </ul>
