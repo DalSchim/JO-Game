@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import ItemComponent from "@/components/IteamComponent.vue";
+import ItemComponent from "@/components/ItemComponent.vue";
 
 export default {
   name: "StartMenu",
