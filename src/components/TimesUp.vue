@@ -1,8 +1,8 @@
 <template>
   <div class="popup">
     <div class="popup-content">
-      <h2>Time's Up!</h2>
-      <p>Your final score is: {{ score }}</p>
+      <h2>Temps écoulé !</h2>
+      <p>Votre score final est de : {{ score }}</p>
 
       <input type="text" v-model="name">
       <button @click="registerScore">sauvegarder mon score</button>
@@ -86,6 +86,6 @@ button {
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: #1A78FF;
 }
 </style>
