@@ -6,7 +6,8 @@
 
       <input type="text" v-model="name">
       <button @click="registerScore">sauvegarder mon score</button>
-      <button @click="restartGame">Restart</button>
+      <button @click="restartGame">Recommencer</button>
+      <button @click="goToHome">Retour à la page d'accueil</button>
       <score-board/>
     </div>
   </div>
@@ -32,6 +33,9 @@ export default {
       scores.push({ name: this.name, score: this.score });
       localStorage.setItem('scores', JSON.stringify(scores));
       //on fait la conditon de validation de la sauvegarde du score
+    },
+    goToHome() {
+      this.$emit('goToHome'); // Émettre un événement pour retourner à la HomeView
     }
 
   },
@@ -73,7 +77,7 @@ export default {
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: #2c3e50;
   color: white;
   border: none;
   padding: 10px 20px;
