@@ -39,6 +39,8 @@ export default {
       score: 0,
       engine: null,
       ground: null,
+      leftWall: null,
+      rightWall: null,
       matterObjects: [],
       groundSpeed: 15,
       sprite_size: 64,
@@ -101,7 +103,27 @@ export default {
           }
         },
       });
-      Matter.World.add(engine.world, [this.ground]);
+      this.leftWall = Matter.Bodies.rectangle(1550, 330, 300, 20, {
+        isStatic: true,
+        restitution: 1,
+        angle: Math.PI / -12,
+        render: {
+          fillStyle: 'transparent'
+        },
+        label: "leftWall",
+      });
+
+      // Mur droit
+      this.rightWall = Matter.Bodies.rectangle(0, 330, 300, 20, {
+        isStatic: true,
+        restitution: 1,
+        angle: Math.PI / 12,
+        render: {
+          fillStyle: 'transparent'
+        },
+        label: "rightWall",
+      });
+      Matter.World.add(engine.world, [this.ground, this.leftWall, this.rightWall]);
 
       const render = Matter.Render.create({
         element: this.$refs.app,
