@@ -21,7 +21,7 @@ export default {
         { name: 'Médaille d\'or', img: require('@/assets/or.png'), msg: '+50 points' },
         { name: 'Médaille d\'argent', img: require('@/assets/argent.png'), msg: '+20 points' },
         { name: 'Médaille de bronze', img: require('@/assets/bronze.png'), msg: '+10 points' },
-        { name: 'Flamme olympique', img: require('@/assets/bonus.png'), msg: 'Vous rajoute 5 secondes' },
+        { name: 'Flamme olympique', img: require('@/assets/bonus.png'), msg: 'Vous rajoute 10 secondes' },
         { name: 'Anne Hidalgo', img: require('@/assets/malus.png'), msg: 'Vous enlève 10 secondes' }
       ]
     };
