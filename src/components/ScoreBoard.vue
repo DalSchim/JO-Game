@@ -49,7 +49,7 @@ h3 {
 }
 .scord-board {
   margin-top: 16px;
-  max-height: 300px;
+  max-height: 200px;
   overflow: scroll;
 
 
