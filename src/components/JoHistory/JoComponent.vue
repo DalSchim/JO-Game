@@ -77,7 +77,7 @@ export default {
 }
 
 .titles h3 {
-  font-size: 20px;
+  font-size: 32px;
   font-weight: bold;
 }
 
@@ -111,7 +111,7 @@ export default {
   }
 
   .titles h3 {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .titles h4 {
