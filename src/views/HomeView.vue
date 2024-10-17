@@ -42,7 +42,7 @@
         </div>
       </div>
     </section>
-    <section class="section-2">
+    <section class="section-2" id="inoubliable">
       <h2>
         Les moment inoubliables
       </h2>
