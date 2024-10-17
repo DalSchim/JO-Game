@@ -30,9 +30,6 @@
       </router-link>
       <hr>
       <ul>
-        <li>
-          <router-link class="link" to="#inoubliable" @click="closeMenu">Inoubliable</router-link>
-        </li>
         <li class="bouutu">
           <ButtonComponent link="/game" text="Jouer"/>
         </li>
