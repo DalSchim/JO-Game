@@ -124,7 +124,7 @@ export default {
   display: block;
   width: 25px;
   height: 3px;
-  background-color: #ffffff;
+  background-color: #1e283e;
   margin-bottom: 5px;
   transition: transform 0.3s, opacity 0.3s;
 }
