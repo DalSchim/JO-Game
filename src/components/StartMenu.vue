@@ -94,7 +94,7 @@ button {
 }
 
 button:hover {
-  background-color: #218838; /* Couleur du bouton au survol */
+  background-color: #1A78FF; /* Couleur du bouton au survol */
 }
 
 .right-column {
