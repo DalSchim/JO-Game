@@ -8,6 +8,7 @@
           Utilisez les flèches pour déplacer la plateforme et attraper des bonus.
           Faites attention aux malus qui réduisent votre score.
         </p>
+        <score-board/>
       </div>
 
       <!-- Colonne centrale avec le bouton "Start" -->
@@ -25,10 +26,12 @@
 
 <script>
 import ItemComponent from "@/components/ItemComponent.vue";
+import ScoreBoard from "@/components/ScoreBoard.vue";
 
 export default {
   name: "StartMenu",
   components: {
+    ScoreBoard,
     ItemComponent,
   },
   methods: {

@@ -2,13 +2,16 @@
   <div class="popup">
     <div class="popup-content">
       <h2>Temps écoulé !</h2>
-      <p>Votre score final est de : {{ score }}</p>
+      <p>Votre score final est de : <b>{{ score }}</b></p>
 
+
+      <button @click="goToHome">Retour à la page d'accueil</button>
+      <button @click="restartGame">Recommencer</button>
+
+      <hr>
+      <score-board ref="scoreBoard"/>
       <input type="text" v-model="name">
       <button @click="registerScore">sauvegarder mon score</button>
-      <button @click="restartGame">Recommencer</button>
-      <button @click="goToHome">Retour à la page d'accueil</button>
-      <score-board/>
     </div>
   </div>
 </template>
@@ -29,15 +32,23 @@ export default {
       this.$emit('restart');
     },
     registerScore() {
+      if (this.name === '') {
+        alert('Veuillez entrer un nom');
+        return;
+      }
+
       const scores = JSON.parse(localStorage.getItem('scores')) || [];
       scores.push({ name: this.name, score: this.score });
       localStorage.setItem('scores', JSON.stringify(scores));
-      //on fait la conditon de validation de la sauvegarde du score
+
+      // Use this.$nextTick() to ensure the component is updated before accessing the ref
+      this.$nextTick(() => {
+        this.$refs.scoreBoard.getScore();  // Update the score list
+      });
     },
     goToHome() {
-      this.$emit('goToHome'); // Émettre un événement pour retourner à la HomeView
+      this.$emit('goToHome');
     }
-
   },
   data() {
     return {
@@ -62,11 +73,16 @@ export default {
   align-items: center;
 }
 
+hr {
+  width: 100%;
+  margin: 20px 0;
+}
+
 .popup-content {
   width: fit-content;
   height: fit-content;
   background-color: white;
-  padding: 20px;
+  padding: 32px 64px;
   border-radius: 10px;
   text-align: center;
   display: flex;
@@ -87,5 +103,11 @@ button {
 
 button:hover {
   background-color: #1A78FF;
+}
+
+input {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 </style>

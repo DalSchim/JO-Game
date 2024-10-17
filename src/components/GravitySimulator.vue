@@ -77,7 +77,7 @@ export default {
       this.startTimer(); // Démarre le timer lorsque le jeu commence
       this.ObjectInterval = setInterval(() => {
         this.addRandomBodies(this.engine);
-      }, 2000); // Ajoute des corps aléatoires lorsque le jeu commence
+      }, 800); // Ajoute des corps aléatoires lorsque le jeu commence
     },
     navigateToHome() {
       // Logique pour naviguer vers la HomeView, par exemple :
@@ -320,8 +320,8 @@ export default {
     },
 
     adjustGravity(remainingTime) {
-      const initialGravity = 0.5;
-      const minGravity = 1;
+      const initialGravity = 1;
+      const minGravity = 0;
 
       const timeRatio = remainingTime / this.timerDuration;
 
