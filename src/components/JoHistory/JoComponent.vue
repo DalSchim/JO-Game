@@ -77,7 +77,7 @@ export default {
 }
 
 .titles h3 {
-  font-size: 32px;
+  font-size: 20px;
   font-weight: bold;
 }
 
