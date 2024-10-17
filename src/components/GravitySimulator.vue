@@ -105,7 +105,7 @@ export default {
       });
       this.leftWall = Matter.Bodies.rectangle(1550, 330, 300, 20, {
         isStatic: true,
-        restitution: 2,
+        restitution: 1,
         angle: Math.PI / -12,
         render: {
           fillStyle: 'transparent'
@@ -116,7 +116,7 @@ export default {
       // Mur droit
       this.rightWall = Matter.Bodies.rectangle(0, 330, 300, 20, {
         isStatic: true,
-        restitution: 2,
+        restitution: 1,
         angle: Math.PI / 12,
         render: {
           fillStyle: 'transparent'
