@@ -98,6 +98,23 @@ export default {
 .logo {
   width: 64px;
   height: 64px;
+  &:hover {
+    animation: dance-image 1s infinite;
+  }
+}
+
+//
+@keyframes dance-image  {
+  0% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+
 
 }
 
@@ -189,6 +206,7 @@ hr {
 li {
   button {
     padding: 8px 16px;
+
     .buton {
       text-decoration: none;
     }
@@ -271,7 +289,7 @@ li {
     }
   }
 
-  hr{
+  hr {
     display: block;
     width: 120px;
     height: 2px;

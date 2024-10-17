@@ -14,8 +14,12 @@
             <ButtonComponent link="/game" text="Jouer"/>
           </div>
         </div>
-
-        <img src="@/assets/oui.png" alt="" width=50% height=50%>
+        <div class="image-head">
+          <p class="dialogue-bull">
+            Salut, je suis la phryge, la mascotte des JO 2024. Je suis là pour vous accompagner dans votre aventure.
+          </p>
+          <img src="@/assets/oui.png" alt="" width=50% height=50%>
+        </div>
 
         <div class="scroll-downs">
           <div class="mousey">
@@ -47,19 +51,19 @@
         <jo-component
             phryge="https://data.over-blog-kiwi.com/6/42/48/22/20231012/ob_614ed7_natation-marathon-mascotte-oly-2d-rvb.webp"
             sport="Natation"
-            date="Léon Marchand"
+            date="Léon Marchand 🥇"
             video="lGMXC-reWtY"
         ></jo-component>
         <jo-component
             phryge="https://data.over-blog-kiwi.com/6/42/48/22/20231012/ob_f8320e_tennis-de-table-mascotte-oly-2d-rvb.webp"
             sport="Tennis de table"
-            date="Les Frère Lebrun"
+            date="Les Frère Lebrun 🥉"
             video="_qquPg_20Jc"
         ></jo-component>
         <jo-component
             phryge="https://data.over-blog-kiwi.com/6/42/48/22/20231012/ob_8ac9d9_judo-mascotte-oly-2d-rvb.webp"
             sport="Judo"
-            date="Teddy Riner"
+            date="Teddy Riner 🥇"
             video="zW-ELjJvXJw"
         ></jo-component>
       </div>
@@ -108,21 +112,55 @@ header {
       padding: 0px 20px;
     }
 
-    .button-container{
+    .button-container {
       width: fit-content;
     }
 
-    img {
+
+    .image-head {
+      position: relative;
       width: 50%;
-      object-fit: cover;
+      .dialogue-bull{
+        transition: all 0.3s;
+        opacity: 0;
+        position: absolute;
+        top: -50px;
+        right: 50px;
+        width: 200px;
+        padding: 16px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
+        @media screen and (max-width: 900px) {
+          display: none;
+        }
+      }
+      &:hover {
+          .dialogue-bull{
+            opacity: 1;
+
+
+
+            @media screen and (max-width: 900px) {
+              display: none;
+            }
+          }
+      }
+
       @media screen and (max-width: 900px) {
         height: 50%;
         width: 100%;
       }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
     }
 
     .text-container {
-      width:85% ;
+      width: 85%;
     }
 
 
